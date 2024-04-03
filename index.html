@@ -70,20 +70,15 @@
 			/* 밑줄 제거 */
 		}
 
-		.bttn {
-			display: flex;
-			width: 400%;
-			max-width: 1300px;
-			justify-content: flex-end;
-			text-align: right;
-			padding: 10px;
-		}
-
 		.btn {
 			font-family: 'InkLipquid';
 			font-size: 35px;
 			color: saddlebrown;
 			text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+			width: 68%;
+			display: flex;
+			justify-content: flex-end;
+			padding: 10px;
 			text-decoration: none;
 		}
 
@@ -120,17 +115,17 @@
 	<div class="container">
 		<nav class="navbar navbar-expand-lg">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="{{ url_for('home')}}">Free - write</a>
+				<a class="navbar-brand" href="#">Free - write</a>
 			</div>
 		</nav>
 	</div>
-	<div class="bttn">
-		<a class="btn btn-primary" href="{{ url_for('post')}}" role="button">글쓰기</a>
+	<div class="btn">
+		<a class="btn btn-primary" href="#" role="button">글쓰기</a>
 	</div>
 	<div class="board-list">
 		<table>
 			<caption style="font-size: 50px;">자유 게시판</caption>
-			<!-- <colgroup>
+			<colgroup>
 				<col class="size01" data-alias="number">
 
 				<col class="size02" data-alias="subject">
@@ -142,7 +137,7 @@
 				<col class="size05" data-alias="hit">
 
 				<col class="size06" data-alias="req">
-			</colgroup> -->
+			</colgroup>
 			<thead>
 				<tr>
 					<th>번호</th>
@@ -167,7 +162,7 @@
 					<td class="tit">
 						<div class="text-wrap">
 							<div>
-								<a href="{url_for('post')}">chugsoon</a>
+								<a>chugsoon</a>
 							</div>
 							<span data-opinion-bbs-comeidx="4811" data-opinion-bbs-uid="1" data-opinion-bbs-opi="6"
 								class="con-comment">[0]</span>
