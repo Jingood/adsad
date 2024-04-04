@@ -41,8 +41,6 @@
 		.container {
 			width: 100%;
 			/* Navbar를 화면 전체 너비로 설정합니다. */
-			position: fixed;
-			/* 화면 상단에 고정시킵니다. */
 			top: 0;
 			z-index: 1000;
 			/* 다른 요소 위에 표시될 수 있도록 설정합니다. */
@@ -125,24 +123,11 @@
 		</nav>
 	</div>
 	<div class="bttn">
-		<a class="btn btn-primary" href="{{ url_for('post')}}" role="button">글쓰기</a>
+		<a class="btn btn-primary" href="{{ url_for('post_add')}}" role="button">글쓰기</a>
 	</div>
 	<div class="board-list">
 		<table>
 			<caption style="font-size: 50px;">자유 게시판</caption>
-			<!-- <colgroup>
-				<col class="size01" data-alias="number">
-
-				<col class="size02" data-alias="subject">
-
-				<col class="size03" data-alias="writer">
-
-				<col class="size04" data-alias="date">
-
-				<col class="size05" data-alias="hit">
-
-				<col class="size06" data-alias="req">
-			</colgroup> -->
 			<thead>
 				<tr>
 					<th>번호</th>
@@ -159,106 +144,19 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr class="">
-					<td class="num">
-						<span>1</span>
-					</td>
-
-					<td class="tit">
-						<div class="text-wrap">
-							<div>
-								<a href="{url_for('post')}">chugsoon</a>
-							</div>
-							<span data-opinion-bbs-comeidx="4811" data-opinion-bbs-uid="1" data-opinion-bbs-opi="6"
-								class="con-comment">[0]</span>
-						</div>
-					</td>
-
-					<td class="user">
-						<span class="layerNickName">cuty</span>
-					</td>
-
-					<td class="date">16:08</td>
-
-					<td class="view">0</td>
-
-					<td class="reco">0</td>
+				{% if posts %}
+				{% for i in range(0, ids|length) %}
+				<tr>
+					<td>{{ ids[i] }}</td>
+					<td>{{ usernames[i] }}</td>
+					<td><a href="{{url_for('comment_add', post_id=ids[i])}}">{{ subjects[i] }}</a></td>
+					<td>{{ contents[i] }}</td>
+					<td>{{ create_dates[i] }}</td>
 				</tr>
-				<tr class="">
-					<td class="num">
-						<span>1</span>
-					</td>
-
-					<td class="tit">
-						<div class="text-wrap">
-							<div>
-								<a>chugsoon</a>
-							</div>
-							<span data-opinion-bbs-comeidx="4811" data-opinion-bbs-uid="1" data-opinion-bbs-opi="6"
-								class="con-comment">[0]</span>
-						</div>
-					</td>
-
-					<td class="user">
-						<span class="layerNickName">cuty</span>
-					</td>
-
-					<td class="date">16:08</td>
-
-					<td class="view">0</td>
-
-					<td class="reco">0</td>
-				</tr>
-				<tr class="">
-					<td class="num">
-						<span>1</span>
-					</td>
-
-					<td class="tit">
-						<div class="text-wrap">
-							<div>
-								<a>chugsoon</a>
-							</div>
-							<span data-opinion-bbs-comeidx="4811" data-opinion-bbs-uid="1" data-opinion-bbs-opi="6"
-								class="con-comment">[0]</span>
-						</div>
-					</td>
-
-					<td class="user">
-						<span class="layerNickName">cuty</span>
-					</td>
-
-					<td class="date">16:08</td>
-
-					<td class="view">0</td>
-
-					<td class="reco">0</td>
-				</tr>
-				<tr class="">
-					<td class="num">
-						<span>1</span>
-					</td>
-
-					<td class="tit">
-						<div class="text-wrap">
-							<div>
-								<a>chugsoon</a>
-							</div>
-							<span data-opinion-bbs-comeidx="4811" data-opinion-bbs-uid="1" data-opinion-bbs-opi="6"
-								class="con-comment">[0]</span>
-						</div>
-					</td>
-
-					<td class="user">
-						<span class="layerNickName">cuty</span>
-					</td>
-
-					<td class="date">16:08</td>
-
-					<td class="view">0</td>
-
-					<td class="reco">0</td>
-				</tr>
+				{% endfor %}
+				{% else %}
+				<td>게시글이 없습니다.</td>
+				{% endif %}
 			</tbody>
 		</table>
 	</div>
