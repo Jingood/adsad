@@ -30,7 +30,7 @@
 			flex-direction: column;
 			height: 100vh;
 			/* 화면 전체 높이에 Navbar를 중앙으로 정렬합니다. */
-			background-image: url("paper-3155438_1280.jpg");
+			background-image: url("/static/paper-3155438_1280.jpg");
 			/* 이미지 경로는 실제 이미지 파일의 경로로 변경해야 합니다. */
 			background-size: cover;
 			/* 배경 이미지를 커버하도록 설정합니다. */
@@ -111,6 +111,16 @@
 		td {
 			text-align: center;
 		}
+
+		td a {
+			color: white;
+			text-decoration: none;
+		}
+
+		td a:hover {
+			color: rgb(183, 135, 57);
+			font-weight: bold;
+		}
 	</style>
 </head>
 
@@ -136,11 +146,10 @@
 
 					<th>글쓴이</th>
 
+					<th>내용</th>
+
 					<th>등록일</th>
 
-					<th>조회</th>
-
-					<th>추천</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -148,10 +157,10 @@
 				{% for i in range(0, ids|length) %}
 				<tr>
 					<td>{{ ids[i] }}</td>
-					<td>{{ usernames[i] }}</td>
 					<td><a href="{{url_for('comment_add', post_id=ids[i])}}">{{ subjects[i] }}</a></td>
-					<td>{{ contents[i] }}</td>
-					<td>{{ create_dates[i] }}</td>
+					<td>{{ usernames[i] }}</td>
+					<td>{{ contents[i][0:10] }}</td>
+					<td>{{ create_dates[i].strftime('%Y-%m-%d') }}</td>
 				</tr>
 				{% endfor %}
 				{% else %}

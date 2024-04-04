@@ -91,29 +91,33 @@
 					<br>
 					<div class="us_da">
 						<p>{{ post.id }}</p>
+					</div>
+					<br>
+					<div class="">
 						<p>{{ post.username }}</p>
 					</div>
 					<br>
-					<p></p>
-					<br>
-					<p></p>
-					<br>
+					<div class="">
+						<p>{{ post.content }}</p>
+					</div>
 				</div>
 			</div>
 			<hr>
 			<div class="div_comment">
 				<ol>
+					{% for i in range(0, answer|length)%}
 					<li>
-						{% for i in range(0, answer|length)%}
 						<div class="comment">
 							<p>{{ answer[i].username }}</p>
 							<br>
 							<p>{{ answer[i].content}} </p>
 							<!-- <button class="">수정</button>
-							<button class="">삭제</button> -->
+							<form action="{{ url_for('comment_delete', comment_id=answer[i].id)}}">
+								<button type="submit" class="">삭제</button>
+							</form> -->
 						</div>
-						{% endfor %}
 					</li>
+					{% endfor %}
 				</ol>
 				<div class="comment_add">
 					<form action="{{ url_for('comment_add_button', post_id=post.id)}}" method="GET">
