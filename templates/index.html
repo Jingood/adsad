@@ -121,6 +121,44 @@
 			color: rgb(183, 135, 57);
 			font-weight: bold;
 		}
+
+		.comment-search {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-top: 20px;
+			font-family: 'InkLipquid';
+			color: saddlebrown;
+		}
+
+		.comment-search input[type="text"],
+		.comment-search select {
+			font-family: 'InkLipquid';
+			font-size: 20px;
+			padding: 5px 10px;
+			margin-right: 10px;
+			background-color: rgba(255, 255, 255, 0.8);
+			border: 1px solid saddlebrown;
+			border-radius: 5px;
+			box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+		}
+
+		.comment-search button {
+			font-family: 'InkLipquid';
+			font-size: 20px;
+			color: white;
+			background-color: saddlebrown;
+			border: none;
+			border-radius: 5px;
+			padding: 5px 15px;
+			cursor: pointer;
+			text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+			transition: background-color 0.3s ease;
+		}
+
+		.comment-search button:hover {
+			background-color: darkred;
+		}
 	</style>
 </head>
 
@@ -169,6 +207,17 @@
 			</tbody>
 		</table>
 	</div>
+	<!-- 글 제목, 글 작성자, 댓글 내용, 댓글 작성자 검색 기능 -->
+	<div class="comment-search">
+		<input type="text" id="commentSearchInput" placeholder="검색어 입력">
+		<select id="searchOption">
+			<option value="postTitle">글 제목</option> <!-- 수정 -->
+			<option value="postAuthor">글 작성자</option> <!-- 수정 -->
+		</select>
+		<button onclick="searchComments()">검색</button>
+	</div>
+
+	<script src="{{ url_for('static', filename='script.js') }}"></script> <!-- 추가 -->
 </body>
 
 </html>

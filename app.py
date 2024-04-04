@@ -101,6 +101,42 @@ def comment_add_button(post_id):
     db.session.commit()
     return redirect(url_for('comment_add', post_id=post_id))
 
+def search_comments():
+    if request.method == 'POST':
+        search_option = request.form.get("searchOption")
+        search_input = request.form.get("commentSearchInput")
+        
+        posts = []
+        answers = []
+        
+        if search_option == 'postTitle':
+            posts = Post.query.filter(Post.subject.like('%{}%'.format(search_input))).all()
+        elif search_option == 'postAuthor':
+            posts = Post.query.filter(Post.username.like('%{}%'.format(search_input))).all()
+        
+        return render_template('index.html', posts=posts, answers=answers)
+
+
+
+@app.route('/comment_modify/<int:comment_id>')
+def comment_modify(comment_id):
+    comment = Answer.query.get(comment_id)
+    username_receive = request.args.get("username")
+    content_receive = request.args.get("content")
+    comment.username = username_receive
+    comment.content = content_receive
+    post_id = comment.post_id
+    db.session.commit()
+    return redirect(url_for('comment_add', post_id=post_id))
+
+
+@app.route('/comment_delete/<int:comment_id>')
+def comment_delete(comment_id):
+    comment = Answer.query.get(comment_id)
+    post_id = comment.post_id
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for('comment_add', post_id=post_id))
 
 if __name__ == "__main__":
     app.run(debug=True)
