@@ -1,9 +1,10 @@
 from datetime import datetime
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, jsonify
 import os
 from flask_sqlalchemy import SQLAlchemy
 import requests
 from werkzeug.utils import redirect
+import sqlite3
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -101,21 +102,23 @@ def comment_add_button(post_id):
     db.session.commit()
     return redirect(url_for('comment_add', post_id=post_id))
 
+
 def search_comments():
     if request.method == 'POST':
         search_option = request.form.get("searchOption")
         search_input = request.form.get("commentSearchInput")
-        
+
         posts = []
         answers = []
-        
-        if search_option == 'postTitle':
-            posts = Post.query.filter(Post.subject.like('%{}%'.format(search_input))).all()
-        elif search_option == 'postAuthor':
-            posts = Post.query.filter(Post.username.like('%{}%'.format(search_input))).all()
-        
-        return render_template('index.html', posts=posts, answers=answers)
 
+        if search_option == 'postTitle':
+            posts = Post.query.filter(Post.subject.like(
+                '%{}%'.format(search_input))).all()
+        elif search_option == 'postAuthor':
+            posts = Post.query.filter(Post.username.like(
+                '%{}%'.format(search_input))).all()
+
+        return render_template('index.html', posts=posts, answers=answers)
 
 
 @app.route('/comment_modify/<int:comment_id>')
@@ -130,13 +133,70 @@ def comment_modify(comment_id):
     return redirect(url_for('comment_add', post_id=post_id))
 
 
-@app.route('/comment_delete/<int:comment_id>')
-def comment_delete(comment_id):
-    comment = Answer.query.get(comment_id)
-    post_id = comment.post_id
-    db.session.delete(comment)
-    db.session.commit()
-    return redirect(url_for('comment_add', post_id=post_id))
+# @app.route('/comment_delete/<int:comment_id>')
+# def comment_delete(comment_id):
+#     comment = Answer.query.get(comment_id)
+#     post_id = comment.post_id
+#     db.session.delete(comment)
+#     db.session.commit()
+#     return redirect(url_for('comment_add', post_id=post_id))
+
+DB_PATH = 'database.db'
+
+
+@app.route('/')
+def index():
+    # 데이터베이스에서 댓글 정보를 가져옴
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM answer")
+    comments = cursor.fetchall()
+    conn.close()
+
+    return render_template('index.html', comments=comments)
+
+
+@app.route('/delete_comment', methods=['POST'])
+def delete_comment():
+    # 클라이언트로부터 삭제할 댓글 id를 받아옴
+    comment_id = request.form.get('comment_id')
+
+    # 데이터베이스 연결
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    try:
+        # 댓글 삭제 쿼리 실행
+        cursor.execute("DELETE FROM answer WHERE id=?", (comment_id,))
+        conn.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'success': False, 'error': str(e)})
+    finally:
+        conn.close()
+
+
+@app.route('/delete_post', methods=['POST'])
+def delete_post():
+    # 클라이언트로부터 삭제할 게시글 id를 받아옴
+    post_id = request.form.get('post_id')
+
+    # 데이터베이스 연결
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    try:
+        # 게시글 삭제 쿼리 실행
+        cursor.execute("DELETE FROM post WHERE id=?", (post_id,))
+        conn.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'success': False, 'error': str(e)})
+    finally:
+        conn.close()
+
 
 if __name__ == "__main__":
     app.run(debug=True)

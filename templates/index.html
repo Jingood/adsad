@@ -199,6 +199,9 @@
 					<td>{{ usernames[i] }}</td>
 					<td>{{ contents[i][0:10] }}</td>
 					<td>{{ create_dates[i].strftime('%Y-%m-%d') }}</td>
+					<!-- 삭제 버튼에 post_id를 추가 -->
+					<td></td>
+					<td><button class="delete-button" data-post-id="{{ ids[i] }}">삭제</button></td>
 				</tr>
 				{% endfor %}
 				{% else %}
@@ -218,6 +221,40 @@
 	</div>
 
 	<script src="{{ url_for('static', filename='script.js') }}"></script> <!-- 추가 -->
+	<script>
+		// 삭제 버튼에 대한 클릭 이벤트 추가
+		document.querySelectorAll('.delete-button').forEach(button => {
+			button.addEventListener('click', function () {
+				const postId = this.dataset.postId; // 해당 게시글의 id 가져오기
+				deletePost(postId); // 삭제 함수 호출
+			});
+		});
+
+		// 삭제 함수
+		function deletePost(postId) {
+			if (confirm('정말로 삭제하시겠습니까?')) {
+				fetch('/delete_post', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: 'post_id=' + encodeURIComponent(postId)
+				})
+					.then(response => {
+						if (response.ok) {
+							// 삭제 성공 시 페이지 새로고침
+							location.reload();
+						} else {
+							alert('게시글 삭제에 실패했습니다.');
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						alert('오류가 발생했습니다.');
+					});
+			}
+		}
+	</script>
 </body>
 
 </html>

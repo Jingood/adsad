@@ -180,9 +180,7 @@
 							<p>{{ answer[i].username }}</p>
 							<hr>
 							<p>{{ answer[i].content}} </p>
-							<form action="{{ url_for('comment_delete', comment_id=answer[i].id)}}">
-								<button type="submit" class="">삭제</button>
-							</form>
+							<button class="delete-button" data-comment-id="{{ answer[i].id }}">삭제</button>
 						</div>
 					</li>
 					{% endfor %}
@@ -197,6 +195,41 @@
 			</div>
 		</div>
 	</div>
+
+	<script>
+		// 삭제 버튼에 대한 클릭 이벤트 추가
+		document.querySelectorAll('.delete-button').forEach(button => {
+			button.addEventListener('click', function () {
+				const commentId = this.dataset.commentId; // 해당 댓글의 id 가져오기
+				deleteComment(commentId); // 삭제 함수 호출
+			});
+		});
+
+		//삭제 함수
+		function deleteComment(commentId) {
+			if (confirm('정말로 삭제하시겠습니까?')) {
+				fetch('/delete_comment', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: 'comment_id=' + encodeURIComponent(commentId)
+				})
+					.then(response => {
+						if (response.ok) {
+							// 삭제 성공 시 페이지 새로고침
+							location.reload();
+						} else {
+							alert('댓글 삭제에 실패했습니다.');
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						alert('오류가 발생했습니다.');
+					});
+			}
+		}
+	</script>
 </body>
 
 </html>
