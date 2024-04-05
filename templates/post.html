@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>post</title>
+	<style>
+		@font-face {
+			font-family: 'InkLipquid';
+			src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/InkLipquid.woff') format('woff');
+			font-weight: normal;
+			font-style: normal;
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			/* 화면 전체 높이에 Navbar를 중앙으로 정렬합니다. */
+			background-image: url("/static/paper-3155438_1280.jpg");
+			/* 이미지 경로는 실제 이미지 파일의 경로로 변경해야 합니다. */
+			background-size: cover;
+			/* 배경 이미지를 커버하도록 설정합니다. */
+			background-position: center;
+			/* 배경 이미지를 가운데로 정렬합니다. */
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		.main h2 {
+			margin: 30px 0;
+			font-size: 80px;
+			color: white;
+			text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+			text-decoration: none;
+		}
+
+		.main h3 {
+			margin-top: 50px;
+			font-size: 40px;
+			color: white;
+			text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+			text-align: center;
+		}
+
+		.main {
+			margin: 100px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			background-color: rgba(0, 0, 0, 0.2);
+			border-radius: 10px;
+			box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+			width: 1100px;
+		}
+
+		/* 작성자, 제목, 내용 디자인 부분 */
+		.us_da {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.post_data {
+			width: 1000px;
+			font-family: 'InkLipquid';
+			font-size: 30px;
+			font: bold;
+			color: white;
+			text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+		}
+
+		.post_data p {
+			width: 100%;
+		}
+
+		.post_1 {
+			height: 500px;
+		}
+
+		/* 댓글 부분  */
+		.comment,
+		li,
+		h3,
+		.comment_add,
+		.comment_search {
+			width: 500px;
+			margin: 10px auto;
+		}
+
+		ul {
+			list-style: none;
+		}
+
+
+		.comment {
+			display: flex;
+			font-size: 15px;
+			color: white;
+			text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+		}
+
+		.comment :nth-child(1) {
+			width: 15%;
+		}
+
+		.comment :nth-child(2) {
+			margin: 5px;
+		}
+
+		.comment :nth-child(3) {
+			width: 85%;
+		}
+
+		/* 댓글 추가 부분 */
+		.comment_add form :first-child {
+			width: 15%;
+		}
+
+		.comment_add form :nth-child(2) {
+			width: 60%;
+		}
+
+		.comment_search input[type="text"] {
+			width: calc(78% - 10px)
+		}
+
+		.comment_add button,
+		.comment_search button {
+			width: calc(25% - 10px)
+		}
+
+		.post_submit {
+			display: inline-block;
+			margin-top: 30px;
+			width: 30%;
+			height: 30px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="main">
+		<h2>{{ post.subject }}</h2>
+		<div>
+			<div class="post_data">
+				<br>
+				<div class="us_da">
+					<p>작성자 : {{ post.username }}</p>
+					<p>작성일 : {{ post.create_date.strftime('%Y-%m-%d')}}</p>
+				</div>
+				<hr>
+				<!-- <br>
+				<div class="">
+					<p>제목 : {{ post.subject }}</p>
+				</div>
+<hr> -->
+				<br>
+				<div class="">
+					<p> 내용 </p>
+					<p>{{ post.content }}</p>
+				</div>
+			</div>
+			<br>
+			<hr>
+			<h3>comment</h3>
+			<div class="div_comment">
+				<ul>
+					{% for i in range(0, answer|length)%}
+					<li>
+						<div class="comment">
+							<p>{{ answer[i].username }}</p>
+							<hr>
+							<p>{{ answer[i].content}} </p>
+							<button class="delete-button" data-comment-id="{{ answer[i].id }}">삭제</button>
+						</div>
+					</li>
+					{% endfor %}
+					</ol>
+					<div class="comment_add">
+						<form action="{{ url_for('comment_add_button', post_id=post.id)}}" method="GET">
+							<input type="text" name="username" placeholder="작성자">
+							<input type="text" name="content" placeholder="댓글 추가">
+							<button type="submit" class="comment_button">comment_add</button>
+						</form>
+					</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// 삭제 버튼에 대한 클릭 이벤트 추가
+		document.querySelectorAll('.delete-button').forEach(button => {
+			button.addEventListener('click', function () {
+				const commentId = this.dataset.commentId; // 해당 댓글의 id 가져오기
+				deleteComment(commentId); // 삭제 함수 호출
+			});
+		});
+
+		//삭제 함수
+		function deleteComment(commentId) {
+			if (confirm('정말로 삭제하시겠습니까?')) {
+				fetch('/delete_comment', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: 'comment_id=' + encodeURIComponent(commentId)
+				})
+					.then(response => {
+						if (response.ok) {
+							// 삭제 성공 시 페이지 새로고침
+							location.reload();
+						} else {
+							alert('댓글 삭제에 실패했습니다.');
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						alert('오류가 발생했습니다.');
+					});
+			}
+		}
+	</script>
+</body>
+
+</html>
